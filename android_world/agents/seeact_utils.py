@@ -1,4 +1,4 @@
-# Copyright 2026 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import PIL
 import requests
 
 # OpenAI model used for these experiments.
-_GPT_TURBO = "gpt-4-turbo-2024-04-09"
+_GPT_TURBO = "gpt-4o"
 
 VALID_ACTIONS = {
     "CLICK",

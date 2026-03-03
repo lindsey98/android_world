@@ -1,4 +1,4 @@
-# Copyright 2026 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 import os
 
-import pkg_resources
+import importlib.resources
 import setuptools
 from setuptools.command import build_py
 
@@ -44,9 +44,8 @@ class _GenerateProtoFiles(setuptools.Command):
     # dependencies.
     from grpc_tools import protoc  # pylint: disable=g-import-not-at-top
 
-    grpc_protos_include = pkg_resources.resource_filename(
-        'grpc_tools', '_proto'
-    )
+    import grpc_tools
+    grpc_protos_include = os.path.join(os.path.dirname(grpc_tools.__file__), '_proto')
 
     for proto_path in _PACKAGE_PROTOS:
       proto_args = [
@@ -73,15 +72,7 @@ _PROTOBUF_VERSION = '5.29.5'
 
 setuptools.setup(
     name='android_world',
-    package_data={
-        '': [
-            '*.json',
-            '*.proto',
-            '*.textproto',
-            '*.xml',
-            'res/xml/*.xml',
-        ]
-    },
+    package_data={'': ['proto/*.proto']},
     packages=setuptools.find_packages(),
     setup_requires=[f'grpcio-tools=={_GRPCIO_TOOLS_VERSION}'],
     install_requires=[

@@ -1,4 +1,4 @@
-# Copyright 2026 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -43,13 +43,17 @@ logging.set_verbosity(logging.WARNING)
 
 os.environ['GRPC_VERBOSITY'] = 'ERROR'  # Only show errors
 os.environ['GRPC_TRACE'] = 'none'  # Disable tracing
-
+os.environ['OPENAI_API_KEY'] = open("./data/openai_key.txt").read().strip()
+os.environ['GCP_API_KEY'] = open("./data/gcp_key.txt").read().strip()
+os.environ['http_proxy'] = "http://127.0.0.1:7890"
+os.environ['https_proxy'] = "http://127.0.0.1:7890"
 
 def _find_adb_directory() -> str:
   """Returns the directory where adb is located."""
   potential_paths = [
       os.path.expanduser('~/Library/Android/sdk/platform-tools/adb'),
       os.path.expanduser('~/Android/Sdk/platform-tools/adb'),
+      os.path.expanduser('~/.local/share/android/sdk/platform-tools/adb'),
   ]
   for path in potential_paths:
     if os.path.isfile(path):
@@ -174,7 +178,7 @@ def _get_agent(
   elif _AGENT_NAME.value == 't3a_gpt4':
     agent = t3a.T3A(env, infer.Gpt4Wrapper('gpt-4-turbo-2024-04-09'))
   elif _AGENT_NAME.value == 'm3a_gpt4v':
-    agent = m3a.M3A(env, infer.Gpt4Wrapper('gpt-4-turbo-2024-04-09'))
+    agent = m3a.M3A(env, infer.Gpt4Wrapper('gpt-4o'))
   # SeeAct.
   elif _AGENT_NAME.value == 'seeact':
     agent = seeact.SeeAct(env)

@@ -1,4 +1,4 @@
-# Copyright 2026 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,6 +37,10 @@ logging.set_verbosity(logging.WARNING)
 
 os.environ['GRPC_VERBOSITY'] = 'ERROR'  # Only show errors
 os.environ['GRPC_TRACE'] = 'none'  # Disable tracing
+os.environ['OPENAI_API_KEY'] = open("./data/openai_key.txt").read().strip()
+os.environ['GCP_API_KEY'] = open("./data/gcp_key.txt").read().strip()
+os.environ['http_proxy'] = "http://127.0.0.1:7890"
+os.environ['https_proxy'] = "http://127.0.0.1:7890"
 
 
 def _find_adb_directory() -> str:
@@ -44,6 +48,7 @@ def _find_adb_directory() -> str:
   potential_paths = [
       os.path.expanduser('~/Library/Android/sdk/platform-tools/adb'),
       os.path.expanduser('~/Android/Sdk/platform-tools/adb'),
+      os.path.expanduser('~/.local/share/android/sdk/platform-tools/adb'),
   ]
   for path in potential_paths:
     if os.path.isfile(path):

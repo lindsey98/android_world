@@ -1,4 +1,4 @@
-# Copyright 2026 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@ class InferTest(absltest.TestCase):
     self.assertEqual(is_safe, False)
 
   def test_gpt4v(self):
-    llm = infer.Gpt4Wrapper(model_name="gpt-4-turbo-2024-04-09")
+    llm = infer.Gpt4Wrapper(model_name="gpt-4o")
     mock_200_response = requests.Response()
     mock_200_response.status_code = 200
     mock_200_response._content = (
@@ -113,7 +113,7 @@ class InferTest(absltest.TestCase):
     self.assertEqual(text_output, "fake response")
 
   def test_gpt4v_retry(self):
-    gpt4v = infer.Gpt4Wrapper(model_name="gpt-4-turbo-2024-04-09")
+    gpt4v = infer.Gpt4Wrapper(model_name="gpt-4o")
 
     mock_429_response = requests.Response()
     mock_429_response.status_code = 429

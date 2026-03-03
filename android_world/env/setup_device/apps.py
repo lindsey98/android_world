@@ -1,4 +1,4 @@
-# Copyright 2026 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -74,12 +74,6 @@ class AppSetup(abc.ABC):
 
   # The short name of the app, as used by adb_utils.
   app_name = ""
-
-  @classmethod
-  def package_name(cls) -> str:
-    return adb_utils.extract_package_name(
-        adb_utils.get_adb_activity(cls.app_name)
-    )
 
   @classmethod
   def setup(cls, env: interface.AsyncEnv) -> None:
@@ -550,6 +544,16 @@ class OsmAndApp(AppSetup):
   DEVICE_MAPS_PATH = "/storage/emulated/0/Android/data/net.osmand/files/"
 
   MAP_NAMES = ("Liechtenstein_europe.obf",)
+  # fixme: manually install from https://download.osmand.net/list.php
+  # then push to emulator
+  # # 1. 先确保目录存在（OsmAnd 运行过一次后会自动创建）
+  # adb -s emulator-5554 shell mkdir -p /storage/emulated/0/Android/data/net.osmand/files/
+  # 
+  # # 2. 推送文件 (假设你在项目根目录)
+  # adb -s emulator-5554 push Liechtenstein_europe.obf /storage/emulated/0/Android/data/net.osmand/files/
+  # # 修改文件所有权，让 App 有权读取
+  # adb -s emulator-5554 shell chown -R media_rw:media_rw /storage/emulated/0/Android/data/net.osmand/files/
+  # adb -s emulator-5554 shell chmod 664 /storage/emulated/0/Android/data/net.osmand/files/*.obf
 
   apk_names = ("net.osmand-4.6.13.apk",)
   app_name = "osmand"
@@ -582,20 +586,20 @@ class OsmAndApp(AppSetup):
     cls._copy_data_to_device(cls.MAP_NAMES, cls.DEVICE_MAPS_PATH, env)
 
     # Make sure security context is correct so that the files can be accessed.
-    for map_file in cls.MAP_NAMES:
-      adb_utils.check_ok(
-          adb_utils.issue_generic_request(
-              [
-                  "shell",
-                  "chcon",
-                  "u:object_r:media_rw_data_file:s0",
-                  file_utils.convert_to_posix_path(
-                      cls.DEVICE_MAPS_PATH, map_file
-                  ),
-              ],
-              env.controller,
-          )
-      )
+    # for map_file in cls.MAP_NAMES:
+    #   adb_utils.check_ok(
+    #       adb_utils.issue_generic_request(
+    #           [
+    #               "shell",
+    #               "chcon",
+    #               "u:object_r:media_rw_data_file:s0",
+    #               file_utils.convert_to_posix_path(
+    #                   cls.DEVICE_MAPS_PATH, map_file
+    #               ),
+    #           ],
+    #           env.controller,
+    #       )
+    #   )
 
     adb_utils.close_app(cls.app_name, env.controller)
 
